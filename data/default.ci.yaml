@@ -1,0 +1,9 @@
+container: lkiesow/opencast-bitbucket-pipelines
+
+script:
+   - mvn -e clean install -DskipTests=true
+
+files:
+   - build/opencast-dist-*.tar.gz
+   - docs/scripts/ddl/mysql5.sql
+   - docs/scripts/activemq/activemq.xml

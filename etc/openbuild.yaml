@@ -1,0 +1,27 @@
+# Openbuild configuration
+
+# Location of the database used by SQLAlchemy
+# Default: 'sqlite:///data/ci.db'
+#database = 'sqlite:///data/ci.db'
+
+# Location of the repository to build. This will be copied into the build
+# directory automatically when a build is started.
+# Default: data/repository/
+#repodir = 'data/repository/'
+
+# Location of the directory where files shall be moved after a build is
+# finished. The files to copy are defined in the build configuration.
+# Default: data/output/
+#outputdir = 'data/output/'
+
+# Location of the default build configuration which is used if no configuration
+# can be found in the repository. The file in the repository must be named
+# .ci.yaml and be located in the repository root directory.
+# Default: data/default.ci.yaml
+#defaultbuildcfg = 'data/default.ci.yaml'
+
+# Location to use for builds. When starting a vuild, a given commit is checked
+# out in the repository, copied to a sub-directory of this and mounted in the
+# build Docker container.
+# Default: data/build
+#builddir = 'data/build'

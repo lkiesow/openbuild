@@ -1,0 +1,4 @@
+*.pyc
+data/ci.db
+data/output/
+data/repository/
