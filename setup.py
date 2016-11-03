@@ -12,11 +12,9 @@ setup(
     install_requires=[
         'sqlalchemy>=0.9.8'
     ],
-    entry_points={
-        'console_scripts': [
-            'openbuild-add',
-            'openbuild-list',
-            'openbuild-run'
-        ]
-    }
+    scripts=[
+        'openbuild-add',
+        'openbuild-list',
+        'openbuild-run'
+    ]
 )
