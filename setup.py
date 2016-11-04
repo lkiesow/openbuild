@@ -10,7 +10,8 @@ setup(
     url='https://github.com/lkiesow/openbuild',
     packages=['openbuild'],
     install_requires=[
-        'sqlalchemy>=0.9.8'
+        'sqlalchemy>=0.9.8',
+        'PyYAML'
     ],
     scripts=[
         'openbuild-add',
