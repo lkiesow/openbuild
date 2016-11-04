@@ -31,6 +31,6 @@ def _load():
     mod = _module()
     for key in _keys():
         if key in config:
-            mod[key] = config[key]
+            setattr(mod, key, config[key])
 
 _load()
