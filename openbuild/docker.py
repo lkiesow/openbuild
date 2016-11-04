@@ -26,9 +26,21 @@ def prepare(build, buildcfg):
         raise OSError('command exited abnormally', err)
     log.append(out)
 
+    uid, _ = Popen(['id', '-u'], stdout=PIPE).communicate()
+    gid, _ = Popen(['id', '-g'], stdout=PIPE).communicate()
+
+    # Create openbuild group
+    useradd = ['docker', 'exec', '-i', '-t', build.name(),
+               'groupadd', '-g', gid, 'openbuild']
+    p = Popen(useradd, stdout=PIPE, stderr=PIPE)
+    out, err = p.communicate()
+    if p.returncode:
+        raise OSError('command exited abnormally', err)
+    log.append(out)
+
     # Create openbuild user
     useradd = ['docker', 'exec', '-i', '-t', build.name(),
-               'useradd', '--home=/openbuild', 'openbuild']
+               'useradd', '-u', uid, '-g', gid, '--home=/openbuild', 'openbuild']
     p = Popen(useradd, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
     if p.returncode:
