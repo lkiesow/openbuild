@@ -31,7 +31,7 @@ def prepare(build, buildcfg):
 
     # Create openbuild group
     useradd = ['docker', 'exec', '-i', '-t', build.name(),
-               'groupadd', '-g', gid, 'openbuild']
+               'groupadd', '-g', gid.strip(), 'openbuild']
     p = Popen(useradd, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
     if p.returncode:
@@ -40,7 +40,8 @@ def prepare(build, buildcfg):
 
     # Create openbuild user
     useradd = ['docker', 'exec', '-i', '-t', build.name(),
-               'useradd', '-u', uid, '-g', gid, '--home=/openbuild', 'openbuild']
+               'useradd', '-u', uid.strip(), '-g', gid.strip(),
+               '--home=/openbuild', 'openbuild']
     p = Popen(useradd, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
     if p.returncode:
