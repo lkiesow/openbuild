@@ -33,6 +33,10 @@ def getauthoremail():
 
 
 def add(rev):
+    '''Add a new build to the queue.
+
+    :param rev: Git revision to build
+    '''
     hash = git.hash(rev)
     db = get_session()
     db.add(Build(what=rev, hash=hash))
@@ -41,6 +45,11 @@ def add(rev):
 
 
 def listbuilds(state):
+    '''Return a list of schedules builds
+
+    :param state: Return builds in a given state only
+    :returns: List of all builds as string
+    '''
     q = get_session().query(Build)
     if state:
         q = q.filter(Build.state == state)
@@ -71,6 +80,12 @@ def nextbuild():
 
 
 def publish(build, buildcfg, log):
+    '''Publish files from build to output directory.
+
+    :param build: Build to publish
+    :param buildcfg: Build specific configuration
+    :param log: Build log to publish
+    '''
     # Create output dir
     dirname = '%05i-%s-%s' % (build.id,
                               build.created.strftime('%Y%m%d%H%M%S'),
@@ -97,6 +112,8 @@ def publish(build, buildcfg, log):
 
 
 def run():
+    '''Run the next build.
+    '''
     build = nextbuild()
     if not build:
         return

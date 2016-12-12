@@ -10,15 +10,21 @@ repodir = 'data/repository/'
 
 
 def _module():
+    '''Return active config module
+    '''
     import sys
     return sys.modules[__name__]
 
 
 def _keys():
+    '''Get all public methods/properties of the configuration module
+    '''
     return [i for i in _module().__dict__.keys() if not i.startswith('_')]
 
 
 def _load():
+    '''Load configuration from file.
+    '''
     import yaml
     import logging
     import os

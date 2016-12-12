@@ -74,6 +74,9 @@ def prepare(build, buildcfg):
 
 def execute(build, cmd):
     '''Execute a given command on the build container.
+
+    :param build: Build to specify the container
+    :param cmd: Command to execute
     '''
     log = []
 
@@ -90,6 +93,10 @@ def execute(build, cmd):
 
 
 def destroy(build):
+    '''Destroys the container for a given build.
+
+    :param build: Build to specify the container
+    '''
     log = []
 
     # Start docker container
