@@ -3,17 +3,13 @@
 Database specification
 '''
 
-import config
+from openbuild import config
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Boolean, Integer, Text, DateTime, create_engine
+from sqlalchemy import Column, Boolean, Integer, UnicodeText, DateTime
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import os.path
-
-# Set default encoding to UTF-8
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 Base = declarative_base()
 
@@ -47,9 +43,9 @@ class Build(Base):
 
     id = Column('id', Integer(), autoincrement='ignore_fk',
                 primary_key=True)
-    state = Column('state', Text(), nullable=False, default='waiting')
-    hash = Column('hash', Text(), nullable=False)
-    what = Column('what', Text(), nullable=False)
+    state = Column('state', UnicodeText(), nullable=False, default=u'waiting')
+    hash = Column('hash', UnicodeText(), nullable=False)
+    what = Column('what', UnicodeText(), nullable=False)
     created = Column('created', DateTime(), nullable=False,
                      default=datetime.today())
     active = Column('active', Boolean(), nullable=True, unique=True)

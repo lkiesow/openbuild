@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import config
-import docker
-import git
-from db import get_session, Build
+from openbuild import config, docker, git
+from openbuild.db import get_session, Build
 from sqlalchemy.exc import IntegrityError
 import smtplib
 import yaml
@@ -12,13 +10,12 @@ import shutil
 import os
 import logging
 
-# Set default encoding to UTF-8
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
-
 
 def getcfg():
+    '''Load the build configuration from disk.
+    Try loading the configuration from the repository first. If there is none,
+    use the default configuration instead.
+    '''
     try:
         with open(os.path.join(config.repodir, '.ci.yaml')) as f:
             data = yaml.load(f)
@@ -28,7 +25,9 @@ def getcfg():
     return data
 
 
-def getauthoremail(rev):
+def getauthoremail():
+    '''Get mail address of the author of the last commit
+    '''
     out, _ = git.log(['--pretty=%aE', '-n1'])
     return out.strip()
 
@@ -80,7 +79,7 @@ def publish(build, buildcfg, log):
     os.makedirs(path)
 
     # Save log file
-    with open(os.path.join(path, 'build.log'), 'wb') as f:
+    with open(os.path.join(path, 'build.log'), 'w') as f:
         f.write(u'\n'.join(log))
 
     # Copy files
@@ -107,7 +106,7 @@ def run():
 
     # Set build to running
     try:
-        query.update({'active': True, 'state': 'running'})
+        query.update({'active': True, 'state': u'running'})
         db.commit()
         logging.info('Starting build ' + build.what)
     except IntegrityError:
@@ -155,9 +154,9 @@ def run():
         raise
     finally:
         if finished:
-            query.update({'state': 'success', 'active': None})
+            query.update({'state': u'success', 'active': None})
         else:
-            query.update({'state': 'failed', 'active': None})
+            query.update({'state': u'failed', 'active': None})
         db.commit()
 
         '''

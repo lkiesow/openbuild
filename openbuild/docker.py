@@ -1,12 +1,24 @@
 # -*- coding: utf-8 -*-
 
-import config
+from openbuild import config
 from subprocess import Popen, PIPE
 import shutil
 import os.path
 
 
 def prepare(build, buildcfg):
+    '''Prepare a Docker container to use for a specific build.
+
+    This command will:
+
+    - Create the Docker container
+    - Add the openbuild user
+    - Set the Bash environment variables
+
+    :param build: Build for which to prepare
+    :param buildcfg: Build configuration to use
+    :returns: Output of executed command
+    '''
     log = []
 
     # Prepare checkout
@@ -23,11 +35,13 @@ def prepare(build, buildcfg):
     p = Popen(runcmd, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
     if p.returncode:
-        raise OSError('command exited abnormally', err)
-    log.append(out)
+        raise OSError('command exited abnormally', err.decode('utf-8'))
+    log.append(out.decode('utf-8'))
 
     uid, _ = Popen(['id', '-u'], stdout=PIPE).communicate()
     gid, _ = Popen(['id', '-g'], stdout=PIPE).communicate()
+    uid = uid.decode('utf-8')
+    gid = gid.decode('utf-8')
 
     # Create openbuild group
     useradd = ['docker', 'exec', '-i', '-t', build.name(),
@@ -35,8 +49,8 @@ def prepare(build, buildcfg):
     p = Popen(useradd, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
     if p.returncode:
-        raise OSError('command exited abnormally', err)
-    log.append(out)
+        raise OSError('command exited abnormally', err.decode('utf-8'))
+    log.append(out.decode('utf-8'))
 
     # Create openbuild user
     useradd = ['docker', 'exec', '-i', '-t', build.name(),
@@ -45,8 +59,8 @@ def prepare(build, buildcfg):
     p = Popen(useradd, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
     if p.returncode:
-        raise OSError('command exited abnormally', err)
-    log.append(out)
+        raise OSError('command exited abnormally', err.decode('utf-8'))
+    log.append(out.decode('utf-8'))
 
     # Add environment variables
     env = 'BUILDNUMBER=%i\nBUILDTARGET="%s"\nBUILDHASH="%s"'
@@ -59,6 +73,8 @@ def prepare(build, buildcfg):
 
 
 def execute(build, cmd):
+    '''Execute a given command on the build container.
+    '''
     log = []
 
     # Start docker container
@@ -67,9 +83,8 @@ def execute(build, cmd):
     p = Popen(execcmd, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
     if p.returncode:
-        raise OSError('command exited abnormally',
-                      'out: %s\merr: %s' % (out, err))
-    log.append(out)
+        raise OSError('command exited abnormally', err.decode('utf-8'))
+    log.append(out.decode('utf-8'))
 
     return log
 
@@ -82,8 +97,8 @@ def destroy(build):
     p = Popen(rmcmd, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
     if p.returncode:
-        raise OSError('command exited abnormally', err)
-    log.append(out)
+        raise OSError('command exited abnormally', err.decode('utf-8'))
+    log.append(out.decode('utf-8'))
 
     # Remove checkout
     shutil.rmtree(build.path())
