@@ -48,6 +48,13 @@ def prepare(build, buildcfg):
         raise OSError('command exited abnormally', err)
     log.append(out)
 
+    # Add environment variables
+    env = 'BUILDNUMBER=%i\nBUILDTARGET="%s"\nBUILDHASH="%s"'
+    env = env % (build.id,
+                 build.what.replace('"', r'\"'),
+                 build.hash.replace('"', r'\"'))
+    log += execute(build, 'echo \'%s\' >> ~/.bashrc' % env)
+
     return log
 
 
@@ -56,11 +63,12 @@ def execute(build, cmd):
 
     # Start docker container
     execcmd = ['docker', 'exec', '-i', '-t', '--user=openbuild', build.name(),
-               'bash', '-c', cmd]
+               'bash', '-i', '-c', cmd]
     p = Popen(execcmd, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
     if p.returncode:
-        raise OSError('command exited abnormally', err)
+        raise OSError('command exited abnormally',
+                      'out: %s\merr: %s' % (out, err))
     log.append(out)
 
     return log

@@ -94,8 +94,8 @@ def publish(build, buildcfg, log):
     os.makedirs(path)
 
     # Save log file
-    with open(os.path.join(path, 'build.log'), 'w') as f:
-        f.write('\n\n'.join(log))
+    with open(os.path.join(path, 'build.log'), 'wb') as f:
+        f.write(u'\n'.join(log))
 
     # Copy files
     for file_glob in buildcfg.get('files', []):
@@ -164,6 +164,9 @@ def run():
                           build.hash))
         '''
         finished = True
+    except:
+        logging.error(u'\n'.join(log))
+        raise
     finally:
         if finished:
             query.update({'state': 'success', 'active': None})
