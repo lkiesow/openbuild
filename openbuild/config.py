@@ -19,7 +19,9 @@ def _keys():
 
 
 def _load():
-    import yaml, logging, os
+    import yaml
+    import logging
+    import os
     globalcfg = '/etc/openbuild/openbuild.yaml'
     localconf = './etc/openbuild.yaml'
     cfg = localconf if os.path.isfile(localconf) else globalcfg
