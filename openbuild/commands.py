@@ -5,7 +5,6 @@ import docker
 import git
 from db import get_session, Build
 from sqlalchemy.exc import IntegrityError
-import subprocess
 import smtplib
 import yaml
 import glob
@@ -29,26 +28,13 @@ def getcfg():
     return data
 
 
-def getgithash(rev):
-
-    git.fetch()
-
-    # Get build hash
-    p = subprocess.Popen(['git', 'rev-parse', rev], stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE, cwd=config.repodir)
-    out, err = p.communicate()
-    if p.returncode:
-        raise OSError('git rev-parse exited abnormally', err)
-    return out.strip()
-
-
 def getauthoremail(rev):
     out, _ = git.log(['--pretty=%aE', '-n1'])
     return out.strip()
 
 
 def add(rev):
-    hash = getgithash(rev)
+    hash = git.hash(rev)
     db = get_session()
     db.add(Build(what=rev, hash=hash))
     db.commit()

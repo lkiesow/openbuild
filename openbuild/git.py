@@ -45,3 +45,20 @@ def clean():
     if p.returncode:
         raise OSError('Could not check out commit hash', err)
     return out, err
+
+
+def hash(rev):
+    '''Resolve the git hash for a specific revision.
+
+    :param rev: Git revision
+    :returns: Git hash
+    '''
+    fetch()
+
+    # Get build hash
+    p = subprocess.Popen(['git', 'rev-parse', rev], stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE, cwd=config.repodir)
+    out, err = p.communicate()
+    if p.returncode:
+        raise OSError('git rev-parse exited abnormally', err)
+    return out.strip()
