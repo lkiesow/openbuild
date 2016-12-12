@@ -3,6 +3,7 @@
 from openbuild import config, docker, git
 from openbuild.db import get_session, Build
 from sqlalchemy.exc import IntegrityError
+from subprocess import Popen, PIPE
 import smtplib
 import yaml
 import glob
@@ -109,6 +110,13 @@ def publish(build, buildcfg, log):
     except OSError:
         pass
     os.symlink(os.path.abspath(path), os.path.join(config.outputdir, linkname))
+
+    # Run global commands
+    if buildcfg.get('createrepo'):
+        p = Popen(['createrepo', config.outputdir], stdout=PIPE, stderr=PIPE)
+    out, err = p.communicate()
+    if p.returncode:
+        raise OSError('command exited abnormally', err.decode('utf-8'))
 
 
 def run():

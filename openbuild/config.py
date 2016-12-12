@@ -7,6 +7,7 @@ defaultbuildcfg = 'data/default.ci.yaml'
 emailsender = 'no-reply@build.opencast.org'
 outputdir = 'data/output/'
 repodir = 'data/repository/'
+createrepo = False
 
 
 def _module():
