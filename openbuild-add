@@ -9,5 +9,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 2:
         print('Usgae: %s rev' % sys.argv[0])
     else:
-        rev = sys.argv[1].decode('utf-8') if sys.version_info[0] == 2 else sys.argv[1]
+        rev = sys.argv[1]
+        if sys.version_info[0] == 2:
+            rev = rev.decode('utf-8')
         print(add(rev))
