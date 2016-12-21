@@ -73,7 +73,7 @@ def nextbuild():
         return
 
     # get next wainting build
-    q = db.query(Build).filter(Build.state == 'waiting')\
+    q = db.query(Build).filter(Build.state == u'waiting')\
           .order_by(Build.id.asc()).limit(1)
     if q.count():
         logging.info('Next build: ' + q[0].what)

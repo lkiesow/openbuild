@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from openbuild import config
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, STDOUT
 import shutil
 import os.path
 
@@ -83,10 +83,10 @@ def execute(build, cmd):
     # Start docker container
     execcmd = ['docker', 'exec', '-i', '-t', '--user=openbuild', build.name(),
                'bash', '-i', '-c', cmd]
-    p = Popen(execcmd, stdout=PIPE, stderr=PIPE)
-    out, err = p.communicate()
+    p = Popen(execcmd, stdout=PIPE, stderr=STDOUT)
+    out, _ = p.communicate()
     if p.returncode:
-        raise OSError('command exited abnormally', err.decode('utf-8'))
+        raise OSError('command exited abnormally', out.decode('utf-8'))
     log.append(out.decode('utf-8'))
 
     return log
