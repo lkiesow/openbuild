@@ -1,0 +1,7 @@
+[Unit]
+Description=Run openbuild build
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/openbuild-run
+User=openbuild
