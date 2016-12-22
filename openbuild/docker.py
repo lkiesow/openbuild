@@ -32,10 +32,10 @@ def prepare(build, buildcfg):
     runcmd = ['docker', 'run', '-d', '-t', '--name=' + build.name(),
               '--workdir=/openbuild', '-v', build.path() + ':/openbuild',
               buildcfg.get('container', 'fedora'), 'bash']
-    p = Popen(runcmd, stdout=PIPE, stderr=PIPE)
-    out, err = p.communicate()
+    p = Popen(runcmd, stdout=PIPE, stderr=STDOUT)
+    out, _ = p.communicate()
     if p.returncode:
-        raise OSError('command exited abnormally', err.decode('utf-8'))
+        raise OSError('command exited abnormally', out.decode('utf-8'))
     log.append(out.decode('utf-8'))
 
     uid, _ = Popen(['id', '-u'], stdout=PIPE).communicate()
@@ -44,22 +44,22 @@ def prepare(build, buildcfg):
     gid = gid.decode('utf-8')
 
     # Create openbuild group
-    useradd = ['docker', 'exec', '-i', '-t', build.name(),
+    useradd = ['docker', 'exec', build.name(),
                'groupadd', '-g', gid.strip(), 'openbuild']
-    p = Popen(useradd, stdout=PIPE, stderr=PIPE)
-    out, err = p.communicate()
+    p = Popen(useradd, stdout=PIPE, stderr=STDOUT)
+    out, _ = p.communicate()
     if p.returncode:
-        raise OSError('command exited abnormally', err.decode('utf-8'))
+        raise OSError('command exited abnormally', out.decode('utf-8'))
     log.append(out.decode('utf-8'))
 
     # Create openbuild user
-    useradd = ['docker', 'exec', '-i', '-t', build.name(),
+    useradd = ['docker', 'exec', build.name(),
                'useradd', '-u', uid.strip(), '-g', gid.strip(),
                '--home=/openbuild', 'openbuild']
-    p = Popen(useradd, stdout=PIPE, stderr=PIPE)
-    out, err = p.communicate()
+    p = Popen(useradd, stdout=PIPE, stderr=STDOUT)
+    out, _ = p.communicate()
     if p.returncode:
-        raise OSError('command exited abnormally', err.decode('utf-8'))
+        raise OSError('command exited abnormally', out.decode('utf-8'))
     log.append(out.decode('utf-8'))
 
     # Add environment variables
@@ -81,7 +81,7 @@ def execute(build, cmd):
     log = []
 
     # Start docker container
-    execcmd = ['docker', 'exec', '-i', '-t', '--user=openbuild', build.name(),
+    execcmd = ['docker', 'exec', '--user=openbuild', build.name(),
                'bash', '-i', '-c', cmd]
     p = Popen(execcmd, stdout=PIPE, stderr=STDOUT)
     out, _ = p.communicate()
@@ -101,10 +101,10 @@ def destroy(build):
 
     # Start docker container
     rmcmd = ['docker', 'rm', '-f', build.name()]
-    p = Popen(rmcmd, stdout=PIPE, stderr=PIPE)
-    out, err = p.communicate()
+    p = Popen(rmcmd, stdout=PIPE, stderr=STDOUT)
+    out, _ = p.communicate()
     if p.returncode:
-        raise OSError('command exited abnormally', err.decode('utf-8'))
+        raise OSError('command exited abnormally', out.decode('utf-8'))
     log.append(out.decode('utf-8'))
 
     # Remove checkout
