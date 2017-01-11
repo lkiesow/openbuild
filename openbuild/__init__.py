@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-    opemnuild
+    openbuild
     ~~~~~~~~~
 
     :copyright: 2016, Lars Kiesow <lkiesow@uos.de>
